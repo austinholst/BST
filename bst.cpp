@@ -32,10 +32,18 @@ int main() {
       build(head, head, head, node);
     }
     else if(strcmp(answer, "remove") == 0) {
-      cout << "What number would you like to remove?" << endl;
-      int number;
-      cin >> number;
-      remove(head,  number);
+      if(head == NULL) {
+	cout << "There is nothing in the tree" << endl;
+      }
+      else {
+	cout << "What number would you like to remove?" << endl;
+	int number;
+	cin >> number;
+	remove(head,  number);
+	if(head->getNum() == 0) {
+	  head = NULL;
+	}
+      }
     }
     else if(strcmp(answer, "print") == 0) {
       printTree(head, 0);
@@ -70,7 +78,7 @@ void build(Node* &head, Node* previous, Node* current,  Node* newNode) {
 	build(head, previous, current->getRight(), newNode);
       }
     }
-    //If the new node is smaller than the head go left
+    //If the new no0de is smaller than the head go left
     else {
       if(current->getLeft() == NULL) {
 	current->setLeft(newNode);
@@ -100,7 +108,6 @@ void printTree(Node* head, int space) {
 }
 
 //Remove nodes from the tree
-//Instead of swapping the data in the node, swap the node itself
 void remove(Node* head, int number) {
   //If the current node is the same as the number you want to delete
   if(head->getNum() == number) {
@@ -108,7 +115,7 @@ void remove(Node* head, int number) {
     if(head->getLeft() == NULL && head->getRight() == NULL) {
       Node* current = head;
       if(current->getParent() == NULL) {
-	head = NULL; //THIS DOESN"T WORK
+	head->setNum(0);
       }
       else if(current->getParent()->getLeft() == current) {
 	current->getParent()->setLeft(NULL);
