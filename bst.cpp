@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include "Node.h"
+#include <stdio.h>
 
 using namespace std;
 
@@ -103,9 +104,21 @@ void printTree(Node* head, int space) {
 void remove(Node* head, int number) {
   //If the current node is the same as the number you want to delete
   if(head->getNum() == number) {
+    //If the current node has no children
+    if(head->getLeft() == NULL && head->getRight() == NULL) {
+      Node* current = head;
+      if(current->getParent() == NULL) {
+	head = NULL; //THIS DOESN"T WORK
+      }
+      else if(current->getParent()->getLeft() == current) {
+	current->getParent()->setLeft(NULL);
+      }
+      else if(current->getParent()->getRight() == current) {
+	current->getParent()->setRight(NULL);
+      }
+    }
     //If there is only a right node
-    if(head->getLeft() == NULL) {
-
+    else if(head->getLeft() == NULL) {
       Node* temp = head->getRight();
       head->setNum(temp->getNum());
       head->setRight(temp->getRight());
@@ -133,16 +146,32 @@ void remove(Node* head, int number) {
 	current = current->getLeft();
       }
       head->setNum(current->getNum());
-      previous->setLeft(current->getRight());
+      if(current->getRight() != NULL) {
+	current->setNum(current->getRight()->getNum());
+	current->setRight(NULL);
+      }
+      else {
+	current->getParent()->setLeft(NULL);
+      }
     }
   }
   //If the number you want is bigger than current 
   else if(number > head->getNum()) {
-    remove(head->getRight(), number);
+    if(head->getRight() == NULL) {
+      cout << "That number isn't in the tree" << endl;
+    }
+    else {
+      remove(head->getRight(), number);
+    }
   }
   //If the number you want is smaller than current
   else if(number < head->getNum()) {
-    remove(head->getLeft(), number);
+    if(head->getLeft() == NULL) {
+      cout << "That number isn't in the tree" << endl;
+    }
+    else {
+      remove(head->getLeft(), number);
+    }
   }
 }
 
